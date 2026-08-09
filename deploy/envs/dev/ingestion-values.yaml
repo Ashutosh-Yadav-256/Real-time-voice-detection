@@ -1,0 +1,14 @@
+replicaCount: 1
+image:
+  repository: my-org/ingestion
+  tag: dev
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+env:
+  KAFKA_BROKERS: "kafka.default.svc.cluster.local:9092"
+  KAFKA_TOPIC: "voice_events"

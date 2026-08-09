@@ -1,0 +1,18 @@
+apiVersion: chaos-mesh.org/v1alpha1
+kind: NetworkChaos
+metadata:
+  name: triton-network-delay
+  namespace: voice-detector
+spec:
+  action: delay
+  mode: all
+  selector:
+    labelSelectors:
+      app: triton-server
+  delay:
+    latency: "200ms"
+    correlation: "100"
+    jitter: "0ms"
+  duration: "30s"
+  scheduler:
+    cron: "@every 2m"

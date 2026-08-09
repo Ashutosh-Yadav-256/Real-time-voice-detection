@@ -1,0 +1,52 @@
+stages:
+  - test
+  - build
+  - scan
+  - deploy
+
+services_test:
+  stage: test
+  image: golang:1.21
+  script:
+    - golangci-lint run ./services/...
+    - go test -v ./services/...
+  only:
+    changes:
+      - services/**/*
+
+ml_test:
+  stage: test
+  image: python:3.10
+  script:
+    - pip install -r ml/requirements.txt pytest flake8
+    - flake8 ml/src ml/scripts
+    - pytest ml/tests
+  only:
+    changes:
+      - ml/**/*
+
+docker_build:
+  stage: build
+  image: docker:20.10.16
+  services:
+    - docker:20.10.16-dind
+  script:
+    - docker build -t myregistry.com/voice-service:$CI_COMMIT_SHA ./services
+    - docker login -u $REG_USER -p $REG_PASS myregistry.com
+    - docker push myregistry.com/voice-service:$CI_COMMIT_SHA
+
+docker_scan:
+  stage: scan
+  image: aquasec/trivy:latest
+  script:
+    - trivy image --exit-code 1 --severity CRITICAL,HIGH myregistry.com/voice-service:$CI_COMMIT_SHA
+
+infra_apply:
+  stage: deploy
+  image: hashicorp/terraform:latest
+  script:
+    - cd infra
+    - terraform init
+    - terraform apply -auto-approve
+  only:
+    - main

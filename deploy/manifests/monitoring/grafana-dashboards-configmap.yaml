@@ -1,0 +1,68 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: voice-detector-dashboard
+  namespace: monitoring
+  labels:
+    grafana_dashboard: "1"
+data:
+  voice-detector.json: |
+    {
+      "title": "Voice Detector Analytics",
+      "panels": [
+        {
+          "type": "heatmap",
+          "title": "E2E Latency",
+          "targets": [
+            {
+              "expr": "sum(rate(e2e_processing_duration_seconds_bucket[5m])) by (le)"
+            }
+          ]
+        },
+        {
+          "type": "gauge",
+          "title": "Active Streams",
+          "targets": [
+            {
+              "expr": "sum(active_voice_streams)"
+            }
+          ]
+        },
+        {
+          "type": "timeseries",
+          "title": "Throughput Timeline",
+          "targets": [
+            {
+              "expr": "sum(rate(voice_stream_bytes_total[1m]))"
+            }
+          ]
+        },
+        {
+          "type": "timeseries",
+          "title": "Error Rate",
+          "targets": [
+            {
+              "expr": "sum(rate(http_requests_total{status=~\"5..\"}[5m])) / sum(rate(http_requests_total[5m]))"
+            }
+          ]
+        },
+        {
+          "type": "timeseries",
+          "title": "GPU Utilization",
+          "targets": [
+            {
+              "expr": "avg(DCGM_FI_DEV_GPU_UTIL) by (pod)"
+            }
+          ]
+        },
+        {
+          "type": "timeseries",
+          "title": "Kafka Consumer Lag",
+          "targets": [
+            {
+              "expr": "sum(kafka_consumergroup_lag) by (consumergroup)"
+            }
+          ]
+        }
+      ]
+    }

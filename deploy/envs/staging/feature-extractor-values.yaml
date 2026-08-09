@@ -1,0 +1,15 @@
+replicaCount: 3
+image:
+  repository: my-org/feature-extractor
+  tag: staging
+resources:
+  limits:
+    cpu: 2000m
+    memory: 2Gi
+  requests:
+    cpu: 1000m
+    memory: 1Gi
+env:
+  KAFKA_BROKERS: "kafka.staging.svc.cluster.local:9092"
+  INPUT_TOPIC: "processed_audio"
+  OUTPUT_TOPIC: "features"

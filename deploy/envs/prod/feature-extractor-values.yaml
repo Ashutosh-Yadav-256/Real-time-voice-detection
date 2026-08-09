@@ -1,0 +1,15 @@
+replicaCount: 10
+image:
+  repository: my-org/feature-extractor
+  tag: prod
+resources:
+  limits:
+    cpu: 4000m
+    memory: 4Gi
+  requests:
+    cpu: 2000m
+    memory: 2Gi
+env:
+  KAFKA_BROKERS: "kafka.prod.svc.cluster.local:9092"
+  INPUT_TOPIC: "processed_audio"
+  OUTPUT_TOPIC: "features"

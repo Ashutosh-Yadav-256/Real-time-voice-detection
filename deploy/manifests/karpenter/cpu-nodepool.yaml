@@ -1,0 +1,37 @@
+apiVersion: karpenter.sh/v1
+kind: NodePool
+metadata:
+  name: cpu-general
+spec:
+  template:
+    metadata:
+      labels:
+        node-type: cpu-general
+    spec:
+      nodeClassRef:
+        group: karpenter.k8s.aws
+        kind: EC2NodeClass
+        name: cpu-general
+      requirements:
+        - key: node.kubernetes.io/instance-type
+          operator: In
+          values:
+            - m6i.large
+            - m6i.xlarge
+            - c6i.large
+            - c6i.xlarge
+        - key: karpenter.sh/capacity-type
+          operator: In
+          values:
+            - on-demand
+            - spot
+        - key: kubernetes.io/arch
+          operator: In
+          values:
+            - amd64
+  limits:
+    cpu: "200"
+    memory: 400Gi
+  disruption:
+    consolidationPolicy: WhenUnderutilized
+    consolidateAfter: 5m

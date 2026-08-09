@@ -1,0 +1,13 @@
+replicaCount: 2
+image:
+  repository: nvcr.io/nvidia/tritonserver
+  tag: "23.10-py3"
+resources:
+  limits:
+    nvidia.com/gpu: 2
+    memory: 16Gi
+    cpu: "4"
+  requests:
+    nvidia.com/gpu: 2
+    memory: 8Gi
+    cpu: "2"

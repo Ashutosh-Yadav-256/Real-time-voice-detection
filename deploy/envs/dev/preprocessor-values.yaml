@@ -1,0 +1,15 @@
+replicaCount: 1
+image:
+  repository: my-org/preprocessor
+  tag: dev
+resources:
+  limits:
+    cpu: 1000m
+    memory: 1Gi
+  requests:
+    cpu: 200m
+    memory: 256Mi
+env:
+  KAFKA_BROKERS: "kafka.default.svc.cluster.local:9092"
+  INPUT_TOPIC: "voice_events"
+  OUTPUT_TOPIC: "processed_audio"

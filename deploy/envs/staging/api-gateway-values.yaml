@@ -1,0 +1,14 @@
+replicaCount: 3
+image:
+  repository: my-org/api-gateway
+  tag: staging
+service:
+  type: LoadBalancer
+  port: 80
+resources:
+  limits:
+    cpu: 1000m
+    memory: 1Gi
+  requests:
+    cpu: 500m
+    memory: 512Mi

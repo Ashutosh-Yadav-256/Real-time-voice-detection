@@ -1,0 +1,49 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: voice-detector-alerts
+  namespace: monitoring
+spec:
+  groups:
+  - name: voice-detector.rules
+    rules:
+    - alert: HighE2ELatency
+      expr: histogram_quantile(0.99, sum(rate(e2e_processing_duration_seconds_bucket[5m])) by (le)) > 2.0
+      for: 5m
+      labels:
+        severity: critical
+    - alert: HighInferenceLatency
+      expr: histogram_quantile(0.99, sum(rate(inference_duration_seconds_bucket[5m])) by (le)) > 0.2
+      for: 5m
+      labels:
+        severity: warning
+    - alert: HighErrorRate
+      expr: sum(rate(http_requests_total{status=~"5.."}[5m])) / sum(rate(http_requests_total[5m])) > 0.01
+      for: 5m
+      labels:
+        severity: critical
+    - alert: HighKafkaConsumerLag
+      expr: kafka_consumergroup_lag > 10000
+      for: 5m
+      labels:
+        severity: warning
+    - alert: HighGPUUtilization
+      expr: avg(DCGM_FI_DEV_GPU_UTIL) by (pod) > 0.95
+      for: 10m
+      labels:
+        severity: warning
+    - alert: GPUNodeNotReady
+      expr: kube_node_status_condition{condition="Ready",status="true"} * on(node) group_left() label_replace(kube_node_labels{label_node_type="gpu-inference"}, "node", "$1", "node", "(.*)") == 0
+      for: 5m
+      labels:
+        severity: critical
+    - alert: ModelAccuracyDrop
+      expr: model_accuracy_score < 0.85
+      for: 15m
+      labels:
+        severity: critical
+    - alert: PodOOMKilled
+      expr: kube_pod_container_status_terminated_reason{reason="OOMKilled"} > 0
+      for: 1m
+      labels:
+        severity: critical

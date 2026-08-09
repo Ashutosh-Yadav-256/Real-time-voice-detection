@@ -1,0 +1,27 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: api-gateway-rollout
+  namespace: voice-api
+spec:
+  replicas: 2
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: api-gateway
+  template:
+    metadata:
+      labels:
+        app: api-gateway
+    spec:
+      containers:
+      - name: api-gateway
+        image: api-gateway:latest
+        ports:
+        - containerPort: 8080
+  strategy:
+    blueGreen:
+      autoPromotionEnabled: false
+      scaleDownDelaySeconds: 600
+      activeService: api-gateway-active
+      previewService: api-gateway-preview

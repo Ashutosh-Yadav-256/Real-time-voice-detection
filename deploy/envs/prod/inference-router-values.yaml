@@ -1,0 +1,15 @@
+replicaCount: 5
+image:
+  repository: my-org/inference-router
+  tag: prod
+resources:
+  limits:
+    cpu: 2000m
+    memory: 2Gi
+  requests:
+    cpu: 1000m
+    memory: 1Gi
+env:
+  KAFKA_BROKERS: "kafka.prod.svc.cluster.local:9092"
+  INPUT_TOPIC: "features"
+  TRITON_URL: "triton.prod.svc.cluster.local:8001"

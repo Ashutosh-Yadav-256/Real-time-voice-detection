@@ -1,0 +1,40 @@
+syntax = "proto3";
+package audio.v1;
+option go_package = "libs/proto/audio/v1";
+
+message AudioChunk {
+    string stream_id = 1;
+    int64 timestamp_ms = 2;
+    bytes payload = 3;
+    string format = 4;
+    int32 sample_rate = 5;
+    int32 channels = 6;
+}
+
+message DetectionEvent {
+    string event_id = 1;
+    string stream_id = 2;
+    int64 timestamp_ms = 3;
+    float probability = 4;
+    string label = 5;
+}
+
+message IngestRequest {
+    AudioChunk chunk = 1;
+}
+
+message IngestResponse {
+    bool success = 1;
+    string error_message = 2;
+}
+
+message DetectionResult {
+    string request_id = 1;
+    string stream_id = 2;
+    float probability = 3;
+    string label = 4;
+}
+
+service AudioIngress {
+    rpc IngestAudio(stream IngestRequest) returns (IngestResponse);
+}

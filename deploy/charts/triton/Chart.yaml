@@ -1,0 +1,6 @@
+apiVersion: v2
+name: triton
+description: A Helm chart for Triton Inference Server
+type: application
+version: 0.1.0
+appVersion: "23.10-py3"

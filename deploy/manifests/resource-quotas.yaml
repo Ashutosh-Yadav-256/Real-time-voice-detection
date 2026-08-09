@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: List
+items:
+  - apiVersion: v1
+    kind: ResourceQuota
+    metadata:
+      name: voice-ingest-quota
+      namespace: voice-ingest
+    spec:
+      hard:
+        requests.cpu: "10"
+        requests.memory: 20Gi
+        limits.cpu: "20"
+        limits.memory: 40Gi
+  - apiVersion: v1
+    kind: ResourceQuota
+    metadata:
+      name: voice-processing-quota
+      namespace: voice-processing
+    spec:
+      hard:
+        requests.cpu: "20"
+        requests.memory: 40Gi
+        limits.cpu: "40"
+        limits.memory: 80Gi
+  - apiVersion: v1
+    kind: ResourceQuota
+    metadata:
+      name: voice-inference-quota
+      namespace: voice-inference
+    spec:
+      hard:
+        requests.cpu: "50"
+        requests.memory: 100Gi
+        limits.cpu: "100"
+        limits.memory: 200Gi
+  - apiVersion: v1
+    kind: ResourceQuota
+    metadata:
+      name: voice-api-quota
+      namespace: voice-api
+    spec:
+      hard:
+        requests.cpu: "10"
+        requests.memory: 20Gi
+        limits.cpu: "20"
+        limits.memory: 40Gi

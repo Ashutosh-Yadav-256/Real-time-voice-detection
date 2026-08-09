@@ -1,0 +1,37 @@
+apiVersion: karpenter.sh/v1
+kind: NodePool
+metadata:
+  name: gpu-inference
+spec:
+  template:
+    metadata:
+      labels:
+        node-type: gpu-inference
+    spec:
+      taints:
+        - key: nvidia.com/gpu
+          value: "true"
+          effect: NoSchedule
+      nodeClassRef:
+        group: karpenter.k8s.aws
+        kind: EC2NodeClass
+        name: gpu-inference
+      requirements:
+        - key: node.kubernetes.io/instance-type
+          operator: In
+          values:
+            - g5.xlarge
+            - g5.2xlarge
+        - key: karpenter.sh/capacity-type
+          operator: In
+          values:
+            - on-demand
+        - key: kubernetes.io/arch
+          operator: In
+          values:
+            - amd64
+  limits:
+    nvidia.com/gpu: "40"
+  disruption:
+    consolidationPolicy: WhenUnderutilized
+    consolidateAfter: 5m

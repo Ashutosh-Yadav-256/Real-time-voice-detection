@@ -1,0 +1,64 @@
+replicaCount: 1
+
+image:
+  repository: nvcr.io/nvidia/tritonserver
+  pullPolicy: IfNotPresent
+  tag: "23.10-py3"
+
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  name: ""
+
+podAnnotations: {}
+podSecurityContext: {}
+securityContext: {}
+
+service:
+  type: ClusterIP
+  ports:
+    http: 8000
+    grpc: 8001
+    metrics: 8002
+
+resources:
+  limits:
+    nvidia.com/gpu: 1
+    memory: 16Gi
+    cpu: "4"
+  requests:
+    nvidia.com/gpu: 1
+    memory: 8Gi
+    cpu: "2"
+
+autoscaling:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 5
+  targetGPUUtilizationPercentage: 70
+
+nodeSelector:
+  karpenter.k8s.aws/instance-category: g4dn
+
+tolerations:
+  - key: "nvidia.com/gpu"
+    operator: "Exists"
+    effect: "NoSchedule"
+
+affinity: {}
+
+pdb:
+  enabled: true
+  minAvailable: 1
+
+networkPolicy:
+  enabled: true
+  ingress: []
+  egress: []
+
+serviceMonitor:
+  enabled: true
+  path: /metrics
+  port: metrics

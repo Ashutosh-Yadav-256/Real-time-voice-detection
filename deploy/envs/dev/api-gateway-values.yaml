@@ -1,0 +1,14 @@
+replicaCount: 1
+image:
+  repository: my-org/api-gateway
+  tag: dev
+service:
+  type: LoadBalancer
+  port: 80
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi

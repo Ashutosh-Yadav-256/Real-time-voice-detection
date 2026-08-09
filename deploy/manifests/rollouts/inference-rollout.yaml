@@ -1,0 +1,36 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: inference-rollout
+  namespace: voice-inference
+spec:
+  replicas: 3
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: inference
+  template:
+    metadata:
+      labels:
+        app: inference
+    spec:
+      containers:
+      - name: inference
+        image: inference:latest
+        ports:
+        - containerPort: 8001
+  strategy:
+    canary:
+      steps:
+      - setWeight: 5
+      - pause: {duration: 1m}
+      - setWeight: 20
+      - pause: {duration: 2m}
+      - analysis:
+          templates:
+          - templateName: latency-error-analysis
+      - setWeight: 50
+      - pause: {duration: 2m}
+      - setWeight: 80
+      - pause: {duration: 2m}
+      - setWeight: 100

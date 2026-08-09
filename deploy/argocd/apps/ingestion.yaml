@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ingestion
+  namespace: argocd
+spec:
+  project: voice-detect
+  source:
+    repoURL: https://github.com/my-org/voice-detect.git
+    targetRevision: HEAD
+    path: deploy/envs/dev
+    helm:
+      valueFiles:
+      - ingestion-values.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: dev
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

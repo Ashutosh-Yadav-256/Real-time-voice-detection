@@ -1,0 +1,27 @@
+name: "voice_detector"
+platform: "onnxruntime_onnx"
+max_batch_size: 16
+input [
+  {
+    name: "input_1"
+    data_type: TYPE_FP32
+    dims: [ 1, 128, 100 ]
+  }
+]
+output [
+  {
+    name: "output_1"
+    data_type: TYPE_FP32
+    dims: [ 1 ]
+  }
+]
+instance_group [
+  {
+    count: 2
+    kind: KIND_GPU
+  }
+]
+dynamic_batching {
+  preferred_batch_size: [ 4, 8, 16 ]
+  max_queue_delay_microseconds: 100
+}

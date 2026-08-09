@@ -1,0 +1,14 @@
+replicaCount: 3
+image:
+  repository: my-org/ingestion
+  tag: staging
+resources:
+  limits:
+    cpu: 1000m
+    memory: 1Gi
+  requests:
+    cpu: 500m
+    memory: 512Mi
+env:
+  KAFKA_BROKERS: "kafka.staging.svc.cluster.local:9092"
+  KAFKA_TOPIC: "voice_events"

@@ -1,0 +1,14 @@
+replicaCount: 5
+image:
+  repository: my-org/event-consumer
+  tag: prod
+resources:
+  limits:
+    cpu: 2000m
+    memory: 2Gi
+  requests:
+    cpu: 1000m
+    memory: 1Gi
+env:
+  KAFKA_BROKERS: "kafka.prod.svc.cluster.local:9092"
+  RESULTS_TOPIC: "inference_results"
